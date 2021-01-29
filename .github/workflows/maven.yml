@@ -22,11 +22,11 @@ jobs:
         java-version: 15
     - name: Build with Maven
       run: mvn -B package --file pom.xml
-    - name: copy file via ssh password
-      uses: appleboy/scp-action@master
-      with:
-        host: a1.tnpl.me
-        username: azureuser
-        password: ${{ secrets.PASSWORD }}
-        source: "./target/demo-0.0.1-SNAPSHOT.jar"
-        target: "."
+#     - name: copy file via ssh password
+#       uses: appleboy/scp-action@master
+#       with:
+#         host: a1.tnpl.me
+#         username: azureuser
+#         password: ${{ secrets.PASSWORD }}
+#         source: "./target/demo-0.0.1-SNAPSHOT.jar"
+#         target: "."
