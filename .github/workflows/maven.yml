@@ -29,4 +29,4 @@ jobs:
         remote: demo.jar
         host: a1.tnpl.me
         username: azureuser
-        password: ${{ secrets.PASSWORD }}
+        password: azureuser
