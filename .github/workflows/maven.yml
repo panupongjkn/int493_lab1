@@ -27,6 +27,6 @@ jobs:
       with:
         host: a1.tnpl.me
         username: azureuser
-        password: @7lWtcXdT6f#A78
+        password: ${{ secrets.PASSWORD }}
         source: "./target/demo-0.0.1-SNAPSHOT.jar"
         target: "."
