@@ -24,7 +24,7 @@ public class MessageController {
 
     @GetMapping("/")
     public String getHello() {
-        return "Hello World";
+        return "Hello World test";
     }
 
     @GetMapping("/messages")
