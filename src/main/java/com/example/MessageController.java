@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/messages")
+@RequestMapping
 public class MessageController {
 
     private HashMap<String, Message> messages = new HashMap<String, Message>();
@@ -22,7 +22,12 @@ public class MessageController {
         this.messages.put(message.getText(), message);
     }
 
-    @GetMapping
+    @GetMapping("/")
+    public String getHello() {
+        return "Hello World";
+    }
+
+    @GetMapping("/messages")
     public ResponseEntity<Data> getMessage() {
         Message[] messages = new Message[this.messages.size()];
         int index = 0;
@@ -34,7 +39,7 @@ public class MessageController {
         return ResponseEntity.ok().body(data);
     }
 
-    @PostMapping
+    @PostMapping("/messages")
     public ResponseEntity<Response> postMessage(@RequestBody Message message) {
         Message messageStore = this.messages.get(message.getText());
         try {
