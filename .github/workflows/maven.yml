@@ -22,6 +22,15 @@ jobs:
         java-version: 15
     - name: Build with Maven
       run: mvn -B package --file pom.xml
+    - name: grant access to write file
+      uses: appleboy/ssh-action@master
+      with:
+        host: a1.tnpl.me
+        username: azureuser
+        password: azureuser
+        script: |
+          sudo chmod a+rws /home/azureuser/
+          sudo chmod a+rws /lib/systemd/system/
     - name: Copy lab1 to vm
       uses: garygrossgarten/github-action-scp@release
       with:
