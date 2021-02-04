@@ -26,15 +26,15 @@ jobs:
       uses: garygrossgarten/github-action-scp@release
       with:
         local: target/demo-0.0.1-SNAPSHOT.jar
-        remote: ~/home/azureuser/lab1.jar
+        remote: lab1.jar
         host: a1.tnpl.me
         username: azureuser
         password: azureuser
-#     - name: Copy service to vm
-#       uses: garygrossgarten/github-action-scp@release
-#       with:
-#         local: lab1.service
-#         remote: /lib/systemd/system/lab1.service
-#         host: a1.tnpl.me
-#         username: azureuser
-#         password: azureuser
+    - name: Copy service to vm
+      uses: garygrossgarten/github-action-scp@release
+      with:
+        local: lab1.service
+        remote: /lib/systemd/system/lab1.service
+        host: a1.tnpl.me
+        username: azureuser
+        password: azureuser
