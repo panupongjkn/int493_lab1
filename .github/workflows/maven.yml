@@ -30,11 +30,11 @@ jobs:
         host: a1.tnpl.me
         username: azureuser
         password: azureuser
-    - name: Copy service to vm
-      uses: garygrossgarten/github-action-scp@release
-      with:
-        local: lab1.service
-        remote: /lib/systemd/system/lab1.service
-        host: a1.tnpl.me
-        username: azureuser
-        password: azureuser
+#     - name: Copy service to vm
+#       uses: garygrossgarten/github-action-scp@release
+#       with:
+#         local: lab1.service
+#         remote: /lib/systemd/system/lab1.service
+#         host: a1.tnpl.me
+#         username: azureuser
+#         password: azureuser
