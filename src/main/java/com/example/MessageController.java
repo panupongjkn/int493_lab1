@@ -24,7 +24,7 @@ public class MessageController {
 
     @GetMapping("/")
     public String getHello() {
-        return "Hello World V.2 automate deploy";
+        return "Hello World Automate Deploy";
     }
 
     @GetMapping("/messages")
