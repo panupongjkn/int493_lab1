@@ -1,9 +1,9 @@
 [Unit]
-Description=demo.jar
+Description=lab1.jar
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/java -jar /home/azureuser/demo.jar
+ExecStart=/usr/bin/java -jar /home/azureuser/lab1.jar
 WorkingDirectory=/home/azureuser
 
 [Install]
