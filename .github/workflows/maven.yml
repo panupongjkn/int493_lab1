@@ -38,3 +38,12 @@ jobs:
         host: a1.tnpl.me
         username: azureuser
         password: azureuser
+    - name: start daemon-reload
+      uses: appleboy/ssh-action@master
+      with:
+        host: a1.tnpl.me
+        username: azureuser
+        password: azureuser
+        script: |
+          sudo systemctl daemon-reload
+          sudo systemctl start lab1
