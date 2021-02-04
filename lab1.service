@@ -1,0 +1,10 @@
+[Unit]
+Description=demo.jar
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/java -jar /home/azureuser/demo.jar
+WorkingDirectory=/home/azureuser
+
+[Install]
+WantedBy=multi-user.target
