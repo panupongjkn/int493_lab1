@@ -19,7 +19,7 @@ jobs:
         VM_IMAGE: Canonical:0001-com-ubuntu-server-focal:20_04-lts-gen2:20.04.202101191
         DISK_SIZE: 8
         ZONE: southeastasia
-        PORT: 8080
+        PORT_INBOUND: 8080
     steps:
     - uses: actions/checkout@v2
 
@@ -66,7 +66,7 @@ jobs:
     - name: SET Port Inbround
       run: |
         az vm open-port \
-          --port $PORT \
+          --port $PORT_INBOUND \
           --name $VM_NAME \
           --priority 1010 \
           --resource-group $RESOURCE_GROUP
@@ -102,6 +102,7 @@ jobs:
         username: azureuser
         password: ${{ secrets.PASSWORD }}
         script: |
+          sudo chmod a+rws /home/azureuser/
           sudo chmod a+rws /lib/systemd/system/
     - name: Copy lab1 to vm
       uses: garygrossgarten/github-action-scp@release
