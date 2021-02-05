@@ -27,16 +27,16 @@ jobs:
       uses: azure/login@v1
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
-#     - name: DELETE VM
-#       run: |
-#         az vm delete \
-#           --resource-group $RESOURCE_GROUP \
-#           --name $VM_NAME -y
-#     - name: DELETE Disk
-#       run: |
-#         az disk delete \
-#           --name $DISK_NAME \
-#           --resource-group $RESOURCE_GROUP -y
+    - name: DELETE VM
+      run: |
+        az vm delete \
+          --resource-group $RESOURCE_GROUP \
+          --name $VM_NAME -y
+    - name: DELETE Disk
+      run: |
+        az disk delete \
+          --name $DISK_NAME \
+          --resource-group $RESOURCE_GROUP -y
     - name: CREATE Disk
       run: |
         az disk create \
