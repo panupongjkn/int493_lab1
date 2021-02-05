@@ -45,7 +45,7 @@ jobs:
     - name: Set outputs
       id: vars
       shell: pwsh
-      run: echo "::set-output name=ip::$(az vm show -d -g $RESOURCE_GROUP -n $VM_NAME --query publicIps -o tsv)" 
+      run: echo "::set-output name=ip::$(az vm list-ip-addresses -g $RESOURCE_GROUP -n $VM_NAME)" 
     - name: Check outputs
       shell: pwsh
       run: echo ${{ steps.vars.outputs.ip }}  
