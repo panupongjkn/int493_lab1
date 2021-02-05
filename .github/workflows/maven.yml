@@ -19,33 +19,27 @@ jobs:
         VM_IMAGE: Canonical:0001-com-ubuntu-server-focal:20_04-lts-gen2:20.04.202101191
     steps:
     - uses: actions/checkout@v2
-#     - name: Test
-#       env:
-#           TEST_GITHUB_TOKEN: ${{ secrets.AZURE_CREDENTIALS }}
-#           TEST_SECRET: ${{ secrets.PASSWORD }}
-#       run: |
-#           echo ${#TEST_GITHUB_TOKEN}
-#           echo ${#TEST_SECRET}
-    - name: AZURE LOGIN 
-      uses: azure/login@v1
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
-    - name: CREATE VM
-      uses: azure/CLI@v1
-      with:
-        azcliversion: 2.0.72
-        inlineScript: |
-          az vm create \
-          --resource-group $RESOURCE_GROUP \
-          --name $VM_NAME \
-          --admin-username azureuser \
-          --admin-password ${{ secrets.PASSWORD }} \
-          --location  southeastasia \
-          --image $VM_IMAGE \
+
+#     - name: AZURE LOGIN 
+#       uses: azure/login@v1
+#       with:
+#         creds: ${{ secrets.AZURE_CREDENTIALS }}
+#     - name: CREATE VM
+#       uses: azure/CLI@v1
+#       with:
+#         azcliversion: 2.0.72
+#         inlineScript: |
+#           az vm create \
+#           --resource-group $RESOURCE_GROUP \
+#           --name $VM_NAME \
+#           --admin-username azureuser \
+#           --admin-password ${{ secrets.PASSWORD }} \
+#           --location  southeastasia \
+#           --image $VM_IMAGE \
     - name: Set outputs
       id: vars
       shell: pwsh
-      run: echo "::set-output name=ip::$(az vm list-ip-addresses -g $RESOURCE_GROUP -n $VM_NAME)" 
+      run: echo "::set-output name=ip::true" 
     - name: Check outputs
       shell: pwsh
       run: echo ${{ steps.vars.outputs.ip }}  
