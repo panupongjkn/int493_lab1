@@ -24,63 +24,76 @@ jobs:
       uses: azure/login@v1
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
-#     - name: CREATE VM
-#       uses: azure/CLI@v1
-#       with:
-#         azcliversion: 2.0.72
-#         inlineScript: |
-#           az vm create \
-#           --resource-group $RESOURCE_GROUP \
-#           --name $VM_NAME \
-#           --admin-username azureuser \
-#           --admin-password ${{ secrets.PASSWORD }} \
-#           --location  southeastasia \
-#           --image $VM_IMAGE \
-    - name: Set outputs
+    - name: CREATE VM
+      uses: azure/CLI@v1
+      with:
+        azcliversion: 2.0.72
+        inlineScript: |
+          az vm create \
+          --resource-group $RESOURCE_GROUP \
+          --name $VM_NAME \
+          --admin-username azureuser \
+          --admin-password ${{ secrets.PASSWORD }} \
+          --location  southeastasia \
+          --image $VM_IMAGE \
+    - name: Set ip address
       id: vars
       run: |
         IP=$(az vm show -d -g $RESOURCE_GROUP -n $VM_NAME --query publicIps -o tsv)
         echo "::set-output name=ip::$IP"
-    - name: Check outputs
+    - name: Check ip address
       run: echo ${{ steps.vars.outputs.ip }}  
-#     - name: Set up JDK 1.8
-#       uses: actions/setup-java@v1
-#       with:
-#         java-version: 15
-#     - name: Build with Maven
-#       run: mvn -B package --file pom.xml
-#     - name: grant access to write file
-#       uses: appleboy/ssh-action@master
-#       with:
-#         host: a1.tnpl.me
-#         username: azureuser
-#         password: azureuser
-#         script: |
-#           sudo chmod a+rws /home/azureuser/
-#           sudo chmod a+rws /lib/systemd/system/
-#     - name: Copy lab1 to vm
-#       uses: garygrossgarten/github-action-scp@release
-#       with:
-#         local: target/demo-0.0.1-SNAPSHOT.jar
-#         remote: lab1.jar
-#         host: a1.tnpl.me
-#         username: azureuser
-#         password: azureuser
-#     - name: Copy service to vm
-#       uses: garygrossgarten/github-action-scp@release
-#       with:
-#         local: lab1.service
-#         remote: /lib/systemd/system/lab1.service
-#         host: a1.tnpl.me
-#         username: azureuser
-#         password: azureuser
-#     - name: start daemon-reload
-#       uses: appleboy/ssh-action@master
-#       with:
-#         host: a1.tnpl.me
-#         username: azureuser
-#         password: azureuser
-#         script: |
-#           sudo systemctl daemon-reload
-#           sudo systemctl stop lab1
-#           sudo systemctl start lab1
+    - name: Create a new DNS record
+      run: |
+        IP=${{ steps.vars.outputs.ip }}
+        az network dns record-set a create \
+          --name @ \
+          --resource-group $RESOURCE_GROUP \
+          --zone-name a1.tnpl.me -o none
+        az network dns record-set a add-record \
+          --ipv4-address $IP \
+          --record-set-name @ \
+          --resource-group $RESOURCE_GROUP \
+          --zone-name a1.tnpl.me \
+          --ttl 300 -o none
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: 15
+    - name: Build with Maven
+      run: mvn -B package --file pom.xml
+    - name: grant access to write file
+      uses: appleboy/ssh-action@master
+      with:
+        host: a1.tnpl.me
+        username: azureuser
+        password: ${{ secrets.PASSWORD }}
+        script: |
+          sudo chmod a+rws /home/azureuser/
+          sudo chmod a+rws /lib/systemd/system/
+    - name: Copy lab1 to vm
+      uses: garygrossgarten/github-action-scp@release
+      with:
+        local: target/demo-0.0.1-SNAPSHOT.jar
+        remote: lab1.jar
+        host: a1.tnpl.me
+        username: azureuser
+        password: ${{ secrets.PASSWORD }}
+    - name: Copy service to vm
+      uses: garygrossgarten/github-action-scp@release
+      with:
+        local: lab1.service
+        remote: /lib/systemd/system/lab1.service
+        host: a1.tnpl.me
+        username: azureuser
+        password: ${{ secrets.PASSWORD }}
+    - name: start daemon-reload
+      uses: appleboy/ssh-action@master
+      with:
+        host: a1.tnpl.me
+        username: azureuser
+        password: ${{ secrets.PASSWORD }}
+        script: |
+          sudo systemctl daemon-reload
+          sudo systemctl stop lab1
+          sudo systemctl start lab1
