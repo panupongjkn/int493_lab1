@@ -39,7 +39,7 @@ jobs:
     - name: Set outputs
       id: vars
       run: |
-        IP=test
+        IP=$(az vm show -d -g $RESOURCE_GROUP -n $VM_NAME --query publicIps -o tsv)
         echo "::set-output name=ip::$IP"
     - name: Check outputs
       run: echo ${{ steps.vars.outputs.ip }}  
