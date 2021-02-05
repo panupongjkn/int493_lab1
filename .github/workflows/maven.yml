@@ -38,10 +38,10 @@ jobs:
 #           --image $VM_IMAGE \
     - name: Set outputs
       id: vars
-      shell: pwsh
-      run: echo "::set-output name=ip::true" 
+      run: |
+        $output=(az vm list-ip-addresses -g int493 -n lab1vm)
+        Write-Output "::set-output name=ip::$output"
     - name: Check outputs
-      shell: pwsh
       run: echo ${{ steps.vars.outputs.ip }}  
 #     - name: Set up JDK 1.8
 #       uses: actions/setup-java@v1
