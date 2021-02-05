@@ -19,7 +19,7 @@ jobs:
     - name: AZURE LOGIN 
       uses: azure/login@v1
       with:
-        creds: ${{secrets.CREDENTIAL}}
+        creds: ${{ secrets.CREDENTIAL }}
     - name: Set up JDK 1.8
       uses: actions/setup-java@v1
       with:
