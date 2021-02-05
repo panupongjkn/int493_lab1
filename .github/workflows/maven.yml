@@ -124,9 +124,12 @@ jobs:
         username: azureuser
         password: ${{ secrets.PASSWORD }}
         script: |
-          sudo apt update
-          sudo apt upgrade
-          sudo apt install openjdk-15-jre-headless
+          sudo apt update -y
+          sudo apt upgrade -y
+          sudo add-apt-repository ppa:linuxuprising/java -y
+          sudo apt update -y
+          echo oracle-java15-installer shared/accepted-oracle-license-v1-2 select true | sudo /usr/bin/debconf-set-selections
+          sudo apt install oracle-java15-installer -y
           sudo systemctl daemon-reload
           sudo systemctl enable lab1
           sudo systemctl stop lab1
