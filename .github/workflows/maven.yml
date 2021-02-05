@@ -24,6 +24,22 @@ jobs:
       uses: azure/login@v1
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
+    - name: DELETE VM
+      run: |
+        az vm delete \
+          --resource-group $RESOURCE_GROUP \
+          --name $VM_NAME -y
+    - name: DELETE Disk
+      run: |
+        az disk delete \
+          --name $DISK_NAME \
+          --resource-group $RESOURCE_GROUP -y
+    - name: CREATE Disk
+      run: |
+        az disk create \
+          --name $DISK_NAME \
+          --resource-group $RESOURCE_GROUP \
+          --size-gb 8
     - name: CREATE VM
       uses: azure/CLI@v1
       with:
@@ -35,6 +51,7 @@ jobs:
           --admin-username azureuser \
           --admin-password ${{ secrets.PASSWORD }} \
           --location  southeastasia \
+          --attach-data-disks $DISK_NAME \
           --image $VM_IMAGE \
     - name: Set ip address
       id: vars
@@ -43,7 +60,13 @@ jobs:
         echo "::set-output name=ip::$IP"
     - name: Check ip address
       run: echo ${{ steps.vars.outputs.ip }}  
-    - name: Create a new DNS record
+    - name: DELETE DNS record
+      run: |
+        az network dns record-set a delete \
+          --name @ \
+          --resource-group $RESOURCE_GROUP \
+          --zone-name a1.tnpl.me -y
+    - name: CREATE DNS record
       run: |
         IP=${{ steps.vars.outputs.ip }}
         az network dns record-set a create \
@@ -87,13 +110,20 @@ jobs:
         host: a1.tnpl.me
         username: azureuser
         password: ${{ secrets.PASSWORD }}
-    - name: start daemon-reload
+    - name: start daemon-reload and install java 15
       uses: appleboy/ssh-action@master
       with:
         host: a1.tnpl.me
         username: azureuser
         password: ${{ secrets.PASSWORD }}
         script: |
+          sudo apt update
+          sudo apt upgrade
+          sudo add-apt-repository ppa:linuxuprising/java
+          sudo apt update
+          sudo apt install oracle-java15-installer
+          sudo apt install oracle-java15-set-default
           sudo systemctl daemon-reload
+          sudo systemctl enable lab1
           sudo systemctl stop lab1
           sudo systemctl start lab1
