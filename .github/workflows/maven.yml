@@ -40,9 +40,9 @@ jobs:
       id: vars
       run: |
         IP=test
-        Write-Output "::set-output name=ip::$IP"
+        echo "::set-output name=ip::$IP"
     - name: Check outputs
-      run: echo ${{ steps.vars.outputs.IP }}  
+      run: echo ${{ steps.vars.outputs.ip }}  
 #     - name: Set up JDK 1.8
 #       uses: actions/setup-java@v1
 #       with:
