@@ -17,6 +17,9 @@ jobs:
         VM_SIZE: Standard_B1s
         VM_NAME: lab1vm
         VM_IMAGE: Canonical:0001-com-ubuntu-server-focal:20_04-lts-gen2:20.04.202101191
+        DISK_SIZE: 8
+        ZONE: southeastasia
+        PORT_INBOUND: 8080
     steps:
     - uses: actions/checkout@v2
 
@@ -39,7 +42,7 @@ jobs:
         az disk create \
           --name $DISK_NAME \
           --resource-group $RESOURCE_GROUP \
-          --size-gb 8
+          --size-gb $DISK_SIZE
     - name: CREATE VM
       uses: azure/CLI@v1
       with:
@@ -50,7 +53,7 @@ jobs:
           --name $VM_NAME \
           --admin-username azureuser \
           --admin-password ${{ secrets.PASSWORD }} \
-          --location  southeastasia \
+          --location  $ZONE \
           --attach-data-disks $DISK_NAME \
           --image $VM_IMAGE \
     - name: SET IP Address
@@ -63,7 +66,7 @@ jobs:
     - name: SET Port Inbround
       run: |
         az vm open-port \
-          --port 8080 \
+          --port $PORT_INBOUND \
           --name $VM_NAME \
           --priority 1010 \
           --resource-group $RESOURCE_GROUP
@@ -95,7 +98,7 @@ jobs:
     - name: grant access to write file
       uses: appleboy/ssh-action@master
       with:
-        host: a1.tnpl.me
+        host: ${{ steps.vars.outputs.ip }}
         username: azureuser
         password: ${{ secrets.PASSWORD }}
         script: |
@@ -106,7 +109,7 @@ jobs:
       with:
         local: target/demo-0.0.1-SNAPSHOT.jar
         remote: lab1.jar
-        host: a1.tnpl.me
+        host: ${{ steps.vars.outputs.ip }}
         username: azureuser
         password: ${{ secrets.PASSWORD }}
     - name: Copy service to vm
@@ -114,13 +117,13 @@ jobs:
       with:
         local: lab1.service
         remote: /lib/systemd/system/lab1.service
-        host: a1.tnpl.me
+        host: ${{ steps.vars.outputs.ip }}
         username: azureuser
         password: ${{ secrets.PASSWORD }}
     - name: start daemon-reload and install java 15
       uses: appleboy/ssh-action@master
       with:
-        host: a1.tnpl.me
+        host: ${{ steps.vars.outputs.ip }}
         username: azureuser
         password: ${{ secrets.PASSWORD }}
         script: |
