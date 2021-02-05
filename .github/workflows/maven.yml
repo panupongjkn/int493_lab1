@@ -17,6 +17,9 @@ jobs:
         VM_SIZE: Standard_B1s
         VM_NAME: lab1vm
         VM_IMAGE: Canonical:0001-com-ubuntu-server-focal:20_04-lts-gen2:20.04.202101191
+        DISK_SIZE: 8
+        ZONE: southeastasia
+        PORT: 8080
     steps:
     - uses: actions/checkout@v2
 
@@ -24,22 +27,22 @@ jobs:
       uses: azure/login@v1
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
-    - name: DELETE VM
-      run: |
-        az vm delete \
-          --resource-group $RESOURCE_GROUP \
-          --name $VM_NAME -y
-    - name: DELETE Disk
-      run: |
-        az disk delete \
-          --name $DISK_NAME \
-          --resource-group $RESOURCE_GROUP -y
+#     - name: DELETE VM
+#       run: |
+#         az vm delete \
+#           --resource-group $RESOURCE_GROUP \
+#           --name $VM_NAME -y
+#     - name: DELETE Disk
+#       run: |
+#         az disk delete \
+#           --name $DISK_NAME \
+#           --resource-group $RESOURCE_GROUP -y
     - name: CREATE Disk
       run: |
         az disk create \
           --name $DISK_NAME \
           --resource-group $RESOURCE_GROUP \
-          --size-gb 8
+          --size-gb $DISK_SIZE
     - name: CREATE VM
       uses: azure/CLI@v1
       with:
@@ -50,7 +53,7 @@ jobs:
           --name $VM_NAME \
           --admin-username azureuser \
           --admin-password ${{ secrets.PASSWORD }} \
-          --location  southeastasia \
+          --location  $ZONE \
           --attach-data-disks $DISK_NAME \
           --image $VM_IMAGE \
     - name: SET IP Address
@@ -63,7 +66,7 @@ jobs:
     - name: SET Port Inbround
       run: |
         az vm open-port \
-          --port 8080 \
+          --port $PORT \
           --name $VM_NAME \
           --priority 1010 \
           --resource-group $RESOURCE_GROUP
