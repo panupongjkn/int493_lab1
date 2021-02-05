@@ -16,15 +16,15 @@ jobs:
     - uses: actions/checkout@v2
     - name: Test
       env:
-          TEST_GITHUB_TOKEN: ${{ secrets.azure.AZURE_CREDENTIALS }}
+          TEST_GITHUB_TOKEN: ${{ secrets.AZURE_CREDENTIALS }}
           TEST_SECRET: ${{ secrets.PASSWORD }}
       run: |
           echo ${#TEST_GITHUB_TOKEN}
           echo ${#TEST_SECRET}
-#     - name: AZURE LOGIN 
-#       uses: azure/login@v1
-#       with:
-#         creds: ${{ secrets.CREDENTIAL }}
+    - name: AZURE LOGIN 
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
     - name: Set up JDK 1.8
       uses: actions/setup-java@v1
       with:
