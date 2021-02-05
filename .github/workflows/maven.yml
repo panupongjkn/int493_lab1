@@ -16,7 +16,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: Test
       env:
-          TEST_GITHUB_TOKEN: ${{ secrets.CREDENTIAL }}
+          TEST_GITHUB_TOKEN: ${{ azure.CREDENTIALS }}
           TEST_SECRET: ${{ secrets.PASSWORD }}
       run: |
           echo ${#TEST_GITHUB_TOKEN}
