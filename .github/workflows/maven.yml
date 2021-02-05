@@ -11,7 +11,12 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-
+    env:
+        RESOURCE_GROUP: int493
+        DISK_NAME: lab1vm_DataDisk_0
+        VM_SIZE: Standard_B1s
+        VM_NAME: lab1vm
+        VM_IMAGE: Canonical:0001-com-ubuntu-server-focal:20_04-lts-gen2:20.04.202101191
     steps:
     - uses: actions/checkout@v2
     - name: Test
@@ -25,6 +30,18 @@ jobs:
       uses: azure/login@v1
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
+    - name: CREATE VM
+      uses: azure/CLI@v1
+      with:
+        azcliversion: 2.0.72
+        inlineScript: |
+          az vm create \
+          --resource-group $RESOURCE_GROUP \
+          --name $VM_NAME \
+          --admin-username azureuser \
+          --admin-password azureuser \
+          --location  southeastasia \
+          --image $VM_IMAGE       
     - name: Set up JDK 1.8
       uses: actions/setup-java@v1
       with:
