@@ -53,13 +53,20 @@ jobs:
           --location  southeastasia \
           --attach-data-disks $DISK_NAME \
           --image $VM_IMAGE \
-    - name: Set ip address
+    - name: SET IP Address
       id: vars
       run: |
         IP=$(az vm show -d -g $RESOURCE_GROUP -n $VM_NAME --query publicIps -o tsv)
         echo "::set-output name=ip::$IP"
     - name: Check ip address
       run: echo ${{ steps.vars.outputs.ip }}  
+    - name: SET Port Inbround
+      run: |
+        az vm open-port \
+          --port 8080 \
+          --name $VM_NAME \
+          --priority 1010 \
+          --resource-group $RESOURCE_GROUP
     - name: DELETE DNS record
       run: |
         az network dns record-set a delete \
@@ -119,10 +126,7 @@ jobs:
         script: |
           sudo apt update
           sudo apt upgrade
-          sudo add-apt-repository ppa:linuxuprising/java
-          sudo apt update
-          sudo apt install oracle-java15-installer
-          sudo apt install oracle-java15-set-default
+          sudo apt install openjdk-15-jre-headless
           sudo systemctl daemon-reload
           sudo systemctl enable lab1
           sudo systemctl stop lab1
